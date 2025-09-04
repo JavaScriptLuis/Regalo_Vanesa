@@ -391,39 +391,33 @@
       }catch(e){}
     }
 
-    function petalBurst(count = 18){
-      if(!bouquet) return;
-      const rect = bouquet.getBoundingClientRect();
-      const cx = rect.left + rect.width/2;
-      const cy = rect.top + rect.height/2;
-      for(let i=0;i<count;i++){
-        const p = document.createElement('div');
-        p.className = 'petal';
-        const s = Math.round(rand(8,26));
-        p.style.width = s + 'px';
-        p.style.height = s + 'px';
-        p.style.position = 'fixed';
-        p.style.left = (cx - s/2) + 'px';
-        p.style.top = (cy - s/2) + 'px';
-        p.style.borderRadius = '50%';
-        p.style.background = 'radial-gradient(circle at 35% 30%, #fff6b5, #ffd447 60%, #f5b400)';
-        p.style.pointerEvents = 'none';
-        p.style.zIndex = 9999;
-        document.body.appendChild(p);
+    function petalRain(count = 36){
+  for(let i=0;i<count;i++){
+    const p = document.createElement('div');
+    p.className = 'petal';
+    const size = Math.round(rand(8,26));
+    p.style.width = size + 'px';
+    p.style.height = size + 'px';
+    p.style.position = 'fixed';
+    p.style.left = rand(0, 100) + 'vw';
+    p.style.top = '-20px';
+    p.style.borderRadius = '50%';
+    p.style.background = 'radial-gradient(circle at 35% 30%, #fff6b5, #ffd447 60%, #f5b400)';
+    p.style.pointerEvents = 'none';
+    p.style.zIndex = 9999;
+    document.body.appendChild(p);
 
-        const angle = rand(0, Math.PI*2);
-        const dist = rand(90, 420);
-        const dx = Math.cos(angle)*dist;
-        const dy = Math.sin(angle)*dist - rand(0,120);
-        const rot = `${rand(180,1080)}deg`;
-        const duration = Math.round(rand(900,1700));
-        const anim = p.animate([
-          { transform: `translate(0px,0px) rotate(0deg)`, opacity: 1 },
-          { transform: `translate(${dx}px, ${dy}px) rotate(${rot})`, opacity: 0.04 }
-        ], { duration, easing: 'cubic-bezier(.2,.9,.3,1)', delay: Math.round(rand(0,120))});
-        anim.onfinish = ()=> p.remove();
-      }
-    }
+    const endY = window.innerHeight + 50;
+    const endX = parseFloat(p.style.left) + rand(-100, 100);
+    const rot = `${rand(180,1080)}deg`;
+    const duration = Math.round(rand(2000,4000));
+    const anim = p.animate([
+      { transform: `translate(0px,0px) rotate(0deg)`, opacity: 1 },
+      { transform: `translate(${endX}px, ${endY}px) rotate(${rot})`, opacity: 0.05 }
+    ], { duration, easing: 'linear', delay: Math.round(rand(0,500)) });
+    anim.onfinish = ()=> p.remove();
+  }
+}
 
     if(btnFlores){
       btnFlores.addEventListener('click', ()=>{
@@ -445,11 +439,13 @@
 
     // envelope / carta
     function openEnvelope(){
-      if(!overlay || !envelope) return;
-      overlay.classList.add('active');
-      overlay.removeAttribute('aria-hidden');
-      setTimeout(()=> envelope.classList.add('open'), 180);
-      // trap focus could be added (kept simple)
+    if(!overlay || !envelope) return;
+    overlay.classList.add('active');
+    overlay.removeAttribute('aria-hidden');
+    setTimeout(()=> envelope.classList.add('open'), 180);
+    
+    // NUEVO: lluvia de pétalos al abrir la carta
+    petalRain(40); // 40 pétalos, puedes ajustar el número
     }
     function closeEnvelope(){
       if(!overlay || !envelope) return;
