@@ -1,0 +1,508 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Flores Amarillas y Carta Digital</title>
+  <meta name="description" content="Flores amarillas digitales y carta romántica" />
+  <style>
+    :root{
+      --bg-1:#0f1225; --bg-2:#1a1f3a;
+      --accent:#ffd447; --accent-2:#ffec8b; --pink:#ff7c9c;
+      --white:#f7f7fb; --muted:#c7c9d9; --shadow:rgba(0,0,0,.25);
+      --radius-2xl:24px; --radius-xl:16px;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      background:
+        radial-gradient(1200px 800px at 70% -10%, #2a2f55 0%, transparent 60%),
+        radial-gradient(900px 600px at -10% 50%, #1c2143 0%, transparent 60%),
+        linear-gradient(180deg,var(--bg-1),var(--bg-2));
+      color:var(--white);
+      overflow-x:hidden;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+      line-height:1.45;
+    }
+
+    /* Aurora + Particles */
+    .aurora{
+      position:fixed; inset:0; z-index:-4; pointer-events:none;
+      background: conic-gradient(from 180deg at 50% 50%,
+        rgba(255,212,71,0.08),
+        rgba(255,124,156,0.08),
+        rgba(0,180,255,0.06),
+        rgba(255,212,71,0.06)
+      );
+      mix-blend-mode: screen; filter: blur(88px) saturate(120%); opacity:.96;
+      animation: auroraMove 22s linear infinite;
+      transform-origin:center;
+    }
+    @keyframes auroraMove { 0%{transform:rotate(0deg) scale(1)} 50%{transform:rotate(180deg) scale(1.08)} 100%{transform:rotate(360deg) scale(1)} }
+
+    #particlesLayer{ position:fixed; inset:0; z-index:-3; pointer-events:none; overflow:hidden; mix-blend-mode:screen; }
+    .particle{ position:absolute; border-radius:50%; filter: blur(8px); mix-blend-mode:screen; opacity:.22; animation: floatParticle linear infinite; }
+    @keyframes floatParticle { 0%{transform:translateY(0) scale(1); opacity:.18} 50%{transform:translateY(-48px) scale(1.12); opacity:.32} 100%{transform:translateY(0) scale(1); opacity:.18} }
+
+    /* subtle charms (low-opacity characters) */
+    #charmLayer{ position:fixed; inset:0; z-index:-2; pointer-events:none; opacity:.06; mix-blend-mode:screen; font-family:monospace; }
+
+    /* Page layout */
+    header.hero{ min-height:100vh; display:grid; place-items:center; padding:36px 18px; text-align:center; isolation:isolate; }
+    .card{ width:min(92vw,980px); border-radius:var(--radius-2xl); padding:clamp(22px,4vw,44px); background:linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.03)); border:1px solid rgba(255,255,255,0.12); box-shadow:0 20px 80px rgba(0,0,0,.45); backdrop-filter: blur(8px) saturate(120%); }
+    .pill{ display:inline-flex; gap:10px; align-items:center; padding:8px 14px; border-radius:999px; background: rgba(255,212,71,0.12); border:1px solid rgba(255,212,71,0.28); color:var(--accent-2); font-weight:700; }
+    h1.title{ margin:14px 0 6px; font-size:clamp(28px,5.6vw,56px); line-height:1.04; }
+    p.subtitle{ margin:0 auto; max-width:60ch; color:var(--muted); font-size:clamp(15px,2vw,18px) }
+    .cta-row{ display:flex; gap:12px; justify-content:center; margin-top:22px; flex-wrap:wrap }
+    .btn{ padding:12px 18px; border-radius:14px; font-weight:700; border:none; cursor:pointer; box-shadow:0 12px 28px rgba(0,0,0,.28); transition:transform .12s ease, box-shadow .18s ease, opacity .12s; }
+    .btn-primary{ background: linear-gradient(180deg,var(--accent),#ffc933); color:#262626; }
+    .btn-ghost{ background: rgba(255,255,255,0.06); color:var(--white); border:1px solid rgba(255,255,255,0.12); }
+    .btn:active{ transform:translateY(1px) }
+
+    /* Decorative heart */
+    .heart{ position:absolute; right:10%; top:8%; width:clamp(56px,7vw,96px); aspect-ratio:1; z-index:0; filter: drop-shadow(0 16px 40px rgba(255,124,156,.14)); animation: beat 1.8s ease-in-out infinite; opacity:.95; pointer-events:none; }
+    @keyframes beat{ 0%,100%{transform:scale(1)} 14%{transform:scale(1.14)} 40%{transform:scale(0.98)} 66%{transform:scale(1.06)} }
+
+    /* Bouquet */
+    section#ramo{ padding:56px 10px 80px; display:grid; place-items:center }
+    .bouquet-wrap{ position:relative; width:min(92vw,920px); border-radius:var(--radius-2xl); background:linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02)); padding:clamp(18px,3.6vw,30px); box-shadow:0 30px 80px rgba(0,0,0,.45); border:1px solid rgba(255,255,255,0.08); overflow:hidden; }
+    svg.bouquet{ width:100%; height:auto; display:block; transition:transform .6s cubic-bezier(.2,.9,.3,1); transform-origin:center; }
+    svg.bouquet.bloom{ transform:scale(1.012) translateY(-6px) }
+
+    /* petal groups inside SVG */
+    .petalos{ transform-box:fill-box; transform-origin:50% 50%; transition: transform 850ms cubic-bezier(.2,.9,.25,1), opacity 850ms ease; opacity:1; }
+    .petal-hidden{ opacity:0; transform:scale(.18) rotate(-8deg); }
+    .petal-bloom{ opacity:1; transform:scale(1) rotate(0deg); }
+
+    /* background petals falling */
+    .petal-layer{ position:fixed; inset:0; pointer-events:none; z-index:-1; overflow:hidden }
+    .petal{ position:absolute; will-change: transform, opacity; opacity:.88; }
+
+    /* Overlay (envelope) */
+    .overlay{ position:fixed; inset:0; display:none; align-items:center; justify-content:center; background:rgba(0,0,0,0.6); z-index:999; }
+    .overlay.active{ display:flex; }
+    .envelope{ position:relative; width:360px; max-width:92vw; height:240px; perspective:1000px; }
+    .envelope .back, .envelope .front{ position:absolute; width:100%; height:100%; border-radius:10px; background:#ffd447; border:2px solid #d4a017; box-shadow:0 8px 30px rgba(0,0,0,.35); }
+    .envelope .flap{ position:absolute; width:100%; height:50%; top:0; left:0; background:#f5b400; transform-origin:top; border-top-left-radius:10px; border-top-right-radius:10px; transition: transform 850ms cubic-bezier(.2,.9,.25,1); z-index:3 }
+    .envelope.open .flap{ transform: rotateX(-180deg) translateY(-8%); }
+    .letter{ position:absolute; left:6%; top:14%; width:88%; height:72%; background:#ffffff; border-radius:6px; padding:14px; box-shadow:0 6px 20px rgba(0,0,0,.2); transform: translateY(100%); transition: transform 850ms cubic-bezier(.2,.9,.25,1); overflow:auto; z-index:2 }
+    .envelope.open .letter{ transform: translateY(0); }
+
+    /* Terminal replacement (not used now but styled) */
+    .terminal{ margin-top:18px; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas; background:#071025; color:#bfefff; padding:14px; border-radius:12px; max-height:260px; overflow:auto; border:1px solid rgba(255,255,255,0.04) }
+
+    /* print */
+    @media print{ .aurora, #particlesLayer, #charmLayer, .petal-layer, .overlay, .heart, .btn { display:none !important } body{ background:#000000; color:#222; } }
+
+    .visually-hidden{ position:absolute !important; left:-9999px; top:auto; width:1px; height:1px; overflow:hidden; }
+  </style>
+</head>
+<audio id="musica" loop>
+  <source src="Music.mp3" type="audio/mpeg">
+  Tu navegador no soporta el audio.
+</audio>
+
+
+<body>
+  <div class="aurora" aria-hidden="true"></div>
+  <div id="particlesLayer" aria-hidden="true"></div>
+  <div id="charmLayer" aria-hidden="true"></div>
+  <div class="petal-layer" id="petalLayer" aria-hidden="true"></div>
+
+ <header class="hero" role="banner">
+  <!-- Texto grande FELIZ 21 DE SEPTIEMBRE -->
+  <h1 class="titulo-grande">FELIZ 21 DE SEPTIEMBRE</h1>
+  <div class="card" role="group" aria-label="Tarjeta de dedicatoria">
+    <span class="pill">🌼 Septiembre — Flores Amarillas</span>
+    <h1 class="title">Para ti, <span id="nombreElla" aria-label="nombre de tu novia">mi amor</span> 💛</h1>
+    <p class="subtitle">En este septiembre quiero regalarte flores amarillas que nunca se marchitan. Mi cariño es real: constante, brillante y tuyo.</p>
+    <div class="cta-row" role="group" aria-label="acciones">
+      <button id="btnFlores" class="btn btn-primary">Haz clic para tus flores</button>
+      <button id="btnCarta" class="btn btn-ghost">Carta Digital 💌</button>
+    </div>
+  </div>
+
+  <svg class="heart" viewBox="0 0 100 100" aria-hidden="true">
+    <defs>
+      <linearGradient id="gH" x1="0" x2="1">
+        <stop offset="0" stop-color="#ff7c9c"/>
+        <stop offset="1" stop-color="#ffd447"/>
+      </linearGradient>
+    </defs>
+    <path d="M50 82 C14 58 6 34 22 20 C36 8 52 20 50 32 C48 20 64 8 78 20 C94 34 86 58 50 82 Z" fill="url(#gH)" opacity="0.96"/>
+  </svg>
+</header>
+
+
+    <svg class="heart" viewBox="0 0 100 100" aria-hidden="true"><defs><linearGradient id="gH" x1="0" x2="1"><stop offset="0" stop-color="#ff7c9c"/><stop offset="1" stop-color="#ffd447"/></linearGradient></defs><path d="M50 82 C14 58 6 34 22 20 C36 8 52 20 50 32 C48 20 64 8 78 20 C94 34 86 58 50 82 Z" fill="url(#gH)" opacity="0.96"/></svg>
+  </header>
+
+  <!-- Ramo -->
+  <section id="ramo" aria-label="ramo">
+    <div class="bouquet-wrap" role="region" aria-label="ramo de flores">
+      <svg class="bouquet" id="bouquet" viewBox="0 0 900 420" role="img" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <path id="petalo" d="M0,-30 C18,-30 20,0 0,30 C-20,0 -18,-30 0,-30Z" />
+          <radialGradient id="gradPetalo" cx="50%" cy="40%" r="70%"><stop offset="0%" stop-color="#fff6b5"/><stop offset="60%" stop-color="#ffd447"/><stop offset="100%" stop-color="#f5b400"/></radialGradient>
+          <radialGradient id="centro" cx="50%" cy="50%" r="60%"><stop offset="0%" stop-color="#ffdd99"/><stop offset="100%" stop-color="#b16600"/></radialGradient>
+          <linearGradient id="tallo" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2e7d32"/><stop offset="100%" stop-color="#1b5e20"/></linearGradient>
+        </defs>
+
+        <g id="flor">
+          <g class="petalos petal-hidden" fill="url(#gradPetalo)" stroke="#e7b400" stroke-width="2">
+            <use href="#petalo" transform="rotate(0)"/>
+            <use href="#petalo" transform="rotate(45)"/>
+            <use href="#petalo" transform="rotate(90)"/>
+            <use href="#petalo" transform="rotate(135)"/>
+            <use href="#petalo" transform="rotate(180)"/>
+            <use href="#petalo" transform="rotate(225)"/>
+            <use href="#petalo" transform="rotate(270)"/>
+            <use href="#petalo" transform="rotate(315)"/>
+          </g>
+          <circle r="16" fill="url(#centro)" stroke="#7a3f00"/>
+        </g>
+
+        <g transform="translate(450,340)">
+          <path d="M0,0 C -10,-60 -10,-120 0,-180" stroke="url(#tallo)" stroke-width="10" fill="none"/>
+          <path d="M0,0 C -60,-40 -120,-120 -160,-200" stroke="url(#tallo)" stroke-width="8" fill="none"/>
+          <path d="M0,0 C 60,-40 120,-120 160,-200" stroke="url(#tallo)" stroke-width="8" fill="none"/>
+
+          <g transform="translate(0,-200)"><use href="#flor"/></g>
+          <g transform="translate(-160,-200) scale(0.95)"><use href="#flor"/></g>
+          <g transform="translate(160,-200) scale(0.95)"><use href="#flor"/></g>
+          <g transform="translate(-80,-140) scale(0.85)"><use href="#flor"/></g>
+          <g transform="translate(80,-140) scale(0.85)"><use href="#flor"/></g>
+
+          <g transform="translate(0,12)"><ellipse cx="0" cy="0" rx="44" ry="18" fill="#ff7c9c" opacity="0.95"/><path d="M-40,0 C-80,20 -76,60 -40,40 C-12,30 -8,10 -12,0 Z" fill="#ff9fb6"/><path d="M40,0 C80,20 76,60 40,40 C12,30 8,10 12,0 Z" fill="#ff9fb6"/></g>
+        </g>
+      </svg>
+
+      <p class="dedication" style="color:var(--muted); margin-top:14px;">Este ramo es tuyo para siempre. Cuando quieras verlo florecer, toca el botón. 💛</p>
+
+    </div>
+  </section>
+
+  <!-- Carta digital overlay -->
+  <div id="overlay" class="overlay" aria-hidden="true">
+    <div class="envelope" id="envelope" role="dialog" aria-modal="true" aria-label="Carta digital">
+      <div class="back"></div>
+      <div class="flap" aria-hidden="true"></div>
+      <div class="front" aria-hidden="true"></div>
+      <div class="letter" id="letter">
+        <!-- Aquí editas el texto de la carta -->
+        <h2 style="margin-top:0">Para mi amor 💛</h2>
+        <p>Hoy en este septiembre especial, te envío estas flores amarillas y mi carta con todo lo que siento. Quiero que sepas que cada día a tu lado es una línea de código bien escrita: clara, con propósito y llena de cariño.</p>
+        <p>Eres mi inspiración, mi tranquilidad y la mejor razón para mejorar. Gracias por ser mi compañera de versiones: alfa, beta y producción. Si aparece un bug, prometo debuggear contigo hasta solucionarlo.</p>
+        <p>Con todo mi amor,<br><strong>Tu ingeniero 💻💛</strong></p>
+        <div style="margin-top:10px; text-align:right">
+          <button id="closeLetter" class="btn btn-primary" style="padding:8px 12px; border-radius:10px;">Cerrar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <style>
+  /* Texto de la carta en negro */
+  #letter {
+    color: #000000; /* negro */
+    font-family: Arial, Helvetica, sans-serif;
+  }
+  #letter h2 {
+    color: #000000;
+  }
+  #letter p {
+    color: #000000;
+  }
+</style>
+<style>
+.titulo-grande {
+  font-size: clamp(40px, 8vw, 90px);
+  text-transform: uppercase;
+  font-weight: 900;
+  color: var(--accent);
+  text-shadow: 2px 2px 10px rgba(0,0,0,0.5);
+  margin: 0 0 8px 0; /* más cerca del card */
+  text-align: center;
+}
+
+
+</style>
+
+  <footer style="text-align:center; color:var(--muted); padding:28px;">
+    Hecho con 🌼 y <strong>amor</strong> por <em><!-- TODO: pon tu nombre --></em>
+  </footer>
+
+  <script>
+
+    window.addEventListener('load', () => {
+    const musica = document.getElementById('musica');
+    if(musica){
+        const playPromise = musica.play();
+        if(playPromise !== undefined){
+        playPromise.catch(error => {
+            console.log('Autoplay bloqueado, espera interacción del usuario.');
+            // Si quieres, puedes reproducir música después de que el usuario haga clic
+            const btnCarta = document.getElementById('btnCarta');
+            const btnFlores = document.getElementById('btnFlores');
+            [btnCarta, btnFlores].forEach(btn => {
+            if(btn){
+                btn.addEventListener('click', ()=> musica.play());
+            }
+            });
+        });
+        }
+    }
+    });
+    // util
+    const $ = (sel, ctx=document) => ctx.querySelector(sel);
+    const $$ = (sel, ctx=document) => Array.from(ctx.querySelectorAll(sel));
+    const rand = (min,max) => Math.random()*(max-min)+min;
+    const clamp = (v,a,b) => Math.max(a, Math.min(b, v));
+
+    // layers
+    const particlesLayer = $('#particlesLayer');
+    const charmLayer = $('#charmLayer');
+    const petalLayer = $('#petalLayer');
+
+    // create particles (bokeh)
+    if(particlesLayer){
+      const COLORS = ['rgba(255,212,71,0.18)','rgba(255,124,156,0.14)','rgba(255,245,196,0.12)','rgba(0,180,255,0.08)'];
+      for(let i=0;i<36;i++){
+        const d = document.createElement('div');
+        d.className = 'particle';
+        const s = Math.round(rand(14,120));
+        d.style.width = s + 'px';
+        d.style.height = s + 'px';
+        d.style.left = rand(-8,100) + 'vw';
+        d.style.top = rand(-8,100) + 'vh';
+        d.style.background = COLORS[Math.floor(rand(0,COLORS.length))];
+        d.style.animationDuration = rand(10,28) + 's';
+        d.style.animationDelay = rand(0,8) + 's';
+        d.style.opacity = clamp(rand(0.04,0.3), 0.02, 0.4);
+        particlesLayer.appendChild(d);
+      }
+    }
+
+    // charms (very subtle columns of symbols)
+    if(charmLayer){
+      const cols = Math.round(clamp(window.innerWidth / 120, 6, 26));
+      const symbols = ['🌼','💛','❤','0','1'];
+      for(let c=0;c<cols;c++){
+        const col = document.createElement('div');
+        col.style.display = 'flex';
+        col.style.flexDirection = 'column';
+        col.style.gap = '12px';
+        col.style.opacity = clamp(rand(0.02,0.12), 0.02, 0.18);
+        col.style.marginLeft = Math.round(rand(0, window.innerWidth/4)) + 'px';
+        col.style.animation = `charmFall ${rand(8,22)}s linear ${rand(0,8)}s infinite`;
+        for(let r=0;r<12;r++){
+          const s = document.createElement('div');
+          s.textContent = symbols[Math.floor(rand(0,symbols.length))];
+          s.style.fontSize = Math.round(rand(8,18)) + 'px';
+          s.style.lineHeight = '14px';
+          s.style.color = 'rgba(255,255,255,0.9)';
+          col.appendChild(s);
+        }
+        charmLayer.appendChild(col);
+      }
+    }
+
+    // falling background petals (depth)
+    if(petalLayer){
+      const COUNT = 36;
+      for(let i=0;i<COUNT;i++){
+        const e = document.createElement('div');
+        e.className = 'petal';
+        const size = Math.round(rand(10,36));
+        e.style.width = size + 'px';
+        e.style.height = size + 'px';
+        e.style.left = rand(-12,100) + 'vw';
+        e.style.top = rand(-40,20) + 'vh';
+        e.style.opacity = clamp(rand(0.24,0.9), 0.12, 1);
+        e.style.backgroundImage = 'radial-gradient(circle at 35% 30%, #fff6b5, #ffd447 60%, #f5b400)';
+        e.style.borderRadius = '50%';
+        e.style.transform = `translate3d(0,0,0) rotate(${rand(0,360)}deg)`;
+        const dur = Math.round(rand(10,26));
+        (function animate(item, d){
+          const loop = ()=>{
+            const endX = rand(-40,40);
+            const endY = 120; // vh
+            item.style.transition = `transform ${d}s linear`;
+            item.style.transform = `translate3d(${endX}vw, ${endY}vh, 0) rotate(${rand(180,1080)}deg)`;
+            setTimeout(()=>{
+              item.style.transition = 'none';
+              item.style.left = rand(-12,100) + 'vw';
+              item.style.top = rand(-40,-8) + 'vh';
+              item.style.transform = `translate3d(0,0,0) rotate(${rand(0,360)}deg)`;
+              // small delay then loop again
+              setTimeout(loop, Math.round(rand(200,1200)));
+            }, d*1000 + Math.round(rand(0,1200)));
+          };
+          // small initial delay
+          setTimeout(loop, Math.round(rand(0,2000)));
+        })(e, dur);
+        petalLayer.appendChild(e);
+      }
+    }
+
+    // bouquet interactions
+    const bouquet = $('#bouquet');
+    const btnFlores = $('#btnFlores');
+    const btnCarta = $('#btnCarta');
+    const overlay = $('#overlay');
+    const envelope = $('#envelope');
+    const closeLetterBtn = $('#closeLetter');
+
+    function getPetaloGroups(){
+      if(!bouquet) return [];
+      // querySelectorAll inside svg
+      return Array.from(bouquet.querySelectorAll('.petalos'));
+    }
+
+    function togglePetals(open = null){
+      const groups = getPetaloGroups();
+      if(groups.length === 0) return false;
+      const isHidden = groups[0].classList.contains('petal-hidden');
+      const shouldOpen = (open === null) ? isHidden : open;
+      groups.forEach((g, idx) => {
+        setTimeout(()=>{
+          if(shouldOpen){
+            g.classList.remove('petal-hidden');
+            g.classList.add('petal-bloom');
+          } else {
+            g.classList.remove('petal-bloom');
+            g.classList.add('petal-hidden');
+          }
+        }, idx * 160);
+      });
+      return shouldOpen;
+    }
+
+    function resetAndPulse(){
+      if(!bouquet) return;
+      bouquet.classList.remove('bloom');
+      void bouquet.offsetWidth;
+      bouquet.classList.add('bloom');
+      try{
+        bouquet.animate([{transform:'scale(1)'},{transform:'scale(1.03)'},{transform:'scale(1)'}],{duration:480,easing:'ease-out'});
+      }catch(e){}
+    }
+
+    function petalBurst(count = 18){
+      if(!bouquet) return;
+      const rect = bouquet.getBoundingClientRect();
+      const cx = rect.left + rect.width/2;
+      const cy = rect.top + rect.height/2;
+      for(let i=0;i<count;i++){
+        const p = document.createElement('div');
+        p.className = 'petal';
+        const s = Math.round(rand(8,26));
+        p.style.width = s + 'px';
+        p.style.height = s + 'px';
+        p.style.position = 'fixed';
+        p.style.left = (cx - s/2) + 'px';
+        p.style.top = (cy - s/2) + 'px';
+        p.style.borderRadius = '50%';
+        p.style.background = 'radial-gradient(circle at 35% 30%, #fff6b5, #ffd447 60%, #f5b400)';
+        p.style.pointerEvents = 'none';
+        p.style.zIndex = 9999;
+        document.body.appendChild(p);
+
+        const angle = rand(0, Math.PI*2);
+        const dist = rand(90, 420);
+        const dx = Math.cos(angle)*dist;
+        const dy = Math.sin(angle)*dist - rand(0,120);
+        const rot = `${rand(180,1080)}deg`;
+        const duration = Math.round(rand(900,1700));
+        const anim = p.animate([
+          { transform: `translate(0px,0px) rotate(0deg)`, opacity: 1 },
+          { transform: `translate(${dx}px, ${dy}px) rotate(${rot})`, opacity: 0.04 }
+        ], { duration, easing: 'cubic-bezier(.2,.9,.3,1)', delay: Math.round(rand(0,120))});
+        anim.onfinish = ()=> p.remove();
+      }
+    }
+
+    if(btnFlores){
+      btnFlores.addEventListener('click', ()=>{
+        try{
+          const opened = togglePetals(); // toggle
+          resetAndPulse();
+          if(opened) petalBurst(20);
+          const sr = document.createElement('div');
+          sr.className = 'visually-hidden';
+          sr.setAttribute('role','status');
+          sr.textContent = opened ? 'Flores abiertas' : 'Flores cerradas';
+          document.body.appendChild(sr);
+          setTimeout(()=> sr.remove(), 900);
+        }catch(err){
+          console.error('btnFlores error', err);
+        }
+      });
+    }
+
+    // envelope / carta
+    function openEnvelope(){
+      if(!overlay || !envelope) return;
+      overlay.classList.add('active');
+      overlay.removeAttribute('aria-hidden');
+      setTimeout(()=> envelope.classList.add('open'), 180);
+      // trap focus could be added (kept simple)
+    }
+    function closeEnvelope(){
+      if(!overlay || !envelope) return;
+      envelope.classList.remove('open');
+      setTimeout(()=> {
+        overlay.classList.remove('active');
+        overlay.setAttribute('aria-hidden','true');
+      }, 620); // wait for animation to finish (~850ms in CSS)
+    }
+
+    if(btnCarta){
+      btnCarta.addEventListener('click', ()=> openEnvelope());
+    }
+    if(closeLetterBtn){
+      closeLetterBtn.addEventListener('click', ()=> closeEnvelope());
+    }
+
+    // close overlay when clicking outside envelope
+    if(overlay){
+      overlay.addEventListener('click', (e)=>{
+        if(e.target === overlay) closeEnvelope();
+      });
+    }
+    // prevent overlay inner click from closing
+    if(envelope){
+      envelope.addEventListener('click', (e)=> e.stopPropagation());
+    }
+
+    // ESC to close
+    window.addEventListener('keydown', (e)=>{
+      if(e.key === 'Escape') closeEnvelope();
+    });
+
+    // initial state ensure petals hidden and bouquet bloom entrance
+    setTimeout(()=>{
+      getPetaloGroups().forEach(g => { g.classList.remove('petal-bloom'); g.classList.add('petal-hidden'); });
+      if(bouquet) bouquet.classList.add('bloom');
+    }, 420);
+
+    // respect prefers-reduced-motion
+    const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+    function handleMotionPref(e){
+      if(e.matches){
+        document.documentElement.style.scrollBehavior = 'auto';
+        $$('*').forEach(el => { try{ el.style.animation = 'none'; el.style.transition = 'none'; } catch(ex){} });
+      }
+    }
+    if(mediaQuery.addEventListener) mediaQuery.addEventListener('change', handleMotionPref);
+    else if(mediaQuery.addListener) mediaQuery.addListener(handleMotionPref);
+    handleMotionPref(mediaQuery);
+
+    // lightweight resize handling
+    let rt; window.addEventListener('resize', ()=>{ clearTimeout(rt); rt = setTimeout(()=>{/* nothing heavy */}, 200); });
+  </script>
+</body>
+</html>
