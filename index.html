@@ -102,20 +102,23 @@
 </head>
 <audio id="musica" loop>
   <source src="Music.mp3" type="audio/mpeg">
-  Tu navegador no soporta el audio.
 </audio>
-
 
 <body>
   <div class="aurora" aria-hidden="true"></div>
+
   <div id="particlesLayer" aria-hidden="true"></div>
   <div id="charmLayer" aria-hidden="true"></div>
   <div class="petal-layer" id="petalLayer" aria-hidden="true"></div>
-
  <header class="hero" role="banner">
   <!-- Texto grande FELIZ 21 DE SEPTIEMBRE -->
   <h1 class="titulo-grande">FELIZ 21 DE SEPTIEMBRE</h1>
-   <h1>INES VANESA SANTOS ALEJANDRO</h1>
+  <p class="typewriter">
+  Hoy, en este septiembre tan especial, te envío estas flores amarillas con mucho amor, Inés.🌻<br>
+  Espero que cada pétalo te recuerde lo mucho que te quiero 💛
+</p>
+  <H1>INES VANESA SANTOS ALEJANDRO</H1>
+  <img src="imagen1.jpg" alt="Flores amarillas" class="mi-imagen" width="300">
   <div class="card" role="group" aria-label="Tarjeta de dedicatoria">
     <span class="pill">🌼 Septiembre — Flores Amarillas</span>
     <h1 class="title">Para ti, <span id="nombreElla" aria-label="nombre de tu novia">mi amor</span> 💛</h1>
@@ -136,7 +139,6 @@
     <path d="M50 82 C14 58 6 34 22 20 C36 8 52 20 50 32 C48 20 64 8 78 20 C94 34 86 58 50 82 Z" fill="url(#gH)" opacity="0.96"/>
   </svg>
 </header>
-
 
     <svg class="heart" viewBox="0 0 100 100" aria-hidden="true"><defs><linearGradient id="gH" x1="0" x2="1"><stop offset="0" stop-color="#ff7c9c"/><stop offset="1" stop-color="#ffd447"/></linearGradient></defs><path d="M50 82 C14 58 6 34 22 20 C36 8 52 20 50 32 C48 20 64 8 78 20 C94 34 86 58 50 82 Z" fill="url(#gH)" opacity="0.96"/></svg>
   </header>
@@ -163,6 +165,7 @@
             <use href="#petalo" transform="rotate(270)"/>
             <use href="#petalo" transform="rotate(315)"/>
           </g>
+          
           <circle r="16" fill="url(#centro)" stroke="#7a3f00"/>
         </g>
 
@@ -194,18 +197,64 @@
       <div class="front" aria-hidden="true"></div>
       <div class="letter" id="letter">
         <!-- Aquí editas el texto de la carta -->
-        <h2 style="margin-top:0">Para mi amor 💛 Ines</h2>
+        <h2 style="margin-top:0">Para mi amor 💛</h2>
         <p>Hoy en este septiembre especial, te envío estas flores amarillas y mi carta con todo lo que siento. Quiero que sepas que cada día a tu lado es una línea de código bien escrita: clara, con propósito y llena de cariño.</p>
         <p>Eres mi inspiración, mi tranquilidad y la mejor razón para mejorar. Gracias por ser mi compañera de versiones: alfa, beta y producción. Si aparece un bug, prometo debuggear contigo hasta solucionarlo.</p>
-        <p>Con todo mi amor,<br><strong>Tu ingeniero Alejandro💻💛</strong></p>
+        <p>Con todo mi amor,<br><strong>Tu ingeniero que te quiere Alejandro 💻💛</strong></p>
         <div style="margin-top:10px; text-align:right">
           <button id="closeLetter" class="btn btn-primary" style="padding:8px 12px; border-radius:10px;">Cerrar</button>
         </div>
       </div>
     </div>
   </div>
-
   <style>
+
+.card {
+  /* tu CSS existente */
+  border: 1px solid rgba(255,212,71,0.4); /* borde amarillo */
+  box-shadow:
+    0 0 12px rgba(255,212,71,0.6),
+    0 0 28px rgba(255,212,71,0.4),
+    0 20px 80px rgba(0,0,0,0.45);
+  transition: box-shadow 0.3s ease, transform 0.2s ease;
+}
+
+.card:hover {
+  box-shadow:
+    0 0 20px rgba(255,212,71,0.8),
+    0 0 40px rgba(255,212,71,0.6),
+    0 20px 80px rgba(0,0,0,0.45);
+  transform: scale(1.02);
+}
+.bouquet-wrap {
+  position:relative;
+  width:min(92vw,920px);
+  border-radius:var(--radius-2xl);
+  background:linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02));
+  padding:clamp(18px,3.6vw,30px);
+  border:1px solid rgba(255,212,71,0.4);
+  box-shadow:
+    0 0 12px rgba(255,212,71,0.5),
+    0 0 24px rgba(255,212,71,0.3),
+    0 30px 80px rgba(0,0,0,.45);
+  overflow:hidden;
+  transition: box-shadow 0.3s ease, transform 0.2s ease;
+}
+
+.bouquet-wrap::before {
+  content: '';
+  position: absolute;
+  inset: -4px; /* un poquito fuera del borde */
+  border-radius: inherit;
+  box-shadow: 0 0 16px 4px rgba(255,212,71,0.7);
+  pointer-events: none;
+  z-index: 1; /* encima del fondo pero debajo de los pétalos */
+}
+
+.bouquet-wrap:hover::before {
+  box-shadow: 0 0 28px 6px rgba(255,212,71,0.9);
+}
+
   /* Texto de la carta en negro */
   #letter {
     color: #000000; /* negro */
@@ -228,12 +277,28 @@
   margin: 0 0 8px 0; /* más cerca del card */
   text-align: center;
 }
+.mi-imagen {
+  width: 300px;      /* ancho fijo */
+  max-width: 100%;   /* evita que se deforme en pantallas pequeñas */
+  height: auto;      /* mantiene proporciones */
+  display: block;    /* para que se pueda centrar */
+  margin: 20px auto; /* centrada con margen */
+  border-radius: 12px; /* esquinas redondeadas opcional */
+}
+.typewriter {
+  overflow: hidden;
+  white-space: nowrap;
+  border-right: 3px solid var(--accent);
+  animation: typing 4s steps(40, end), blink 0.8s step-end infinite;
+}
+@keyframes typing { from { width: 0 } to { width: 100% } }
+@keyframes blink { 50% { border-color: transparent } }
 
 
 </style>
 
   <footer style="text-align:center; color:var(--muted); padding:28px;">
-    Hecho con 🌼 y <strong>amor</strong> por tu novio que te ama mucho Alejandro<em><!-- TODO: pon tu nombre --></em>
+    Hecho con 🌼 y <strong>amor</strong> por tu novio Alejandro <em><!-- TODO: pon tu nombre --></em>
   </footer>
 
   <script>
@@ -257,6 +322,7 @@
         }
     }
     });
+
     // util
     const $ = (sel, ctx=document) => ctx.querySelector(sel);
     const $$ = (sel, ctx=document) => Array.from(ctx.querySelectorAll(sel));
@@ -357,6 +423,30 @@
     const envelope = $('#envelope');
     const closeLetterBtn = $('#closeLetter');
 
+    function confettiBurst(count = 20){
+  const colors = ['#ffd447','#ff7c9c','#ffec8b'];
+  for(let i=0;i<count;i++){
+    const c = document.createElement('div');
+    c.style.width = c.style.height = Math.round(rand(6,12))+'px';
+    c.style.background = colors[Math.floor(rand(0,colors.length))];
+    c.style.position = 'fixed';
+    c.style.left = rand(0,100)+'vw';
+    c.style.top = '-10px';
+    c.style.borderRadius = '50%';
+    c.style.pointerEvents = 'none';
+    c.style.zIndex = 9999;
+    document.body.appendChild(c);
+
+    const anim = c.animate([
+      { transform: 'translateY(0) rotate(0deg)', opacity: 1 },
+      { transform: `translateY(${window.innerHeight}px) rotate(${rand(180,1080)}deg)`, opacity: 0 }
+    ], { duration: Math.round(rand(2000,3500)), easing: 'ease-out' });
+
+    anim.onfinish = ()=> c.remove();
+  }
+}
+
+
     function getPetaloGroups(){
       if(!bouquet) return [];
       // querySelectorAll inside svg
@@ -420,6 +510,7 @@
   }
 }
 
+
     if(btnFlores){
       btnFlores.addEventListener('click', ()=>{
         try{
@@ -437,6 +528,57 @@
         }
       });
     }
+const frases = [
+  "Te amo 💛",
+  "Eres todo para mí 💐",
+  "Mi vida 🌻",
+  "Siempre contigo 💌",
+  "Mi sol ☀️"
+];
+
+btnFlores.addEventListener('click', () => {
+  const opened = togglePetals(); // florecen las flores
+  resetAndPulse();
+confettiBurst(30); // lanza 30 confetis cuando florecen las flores
+
+  // NUEVO: mensaje flotante dentro del cuadro de flores
+  const bouquetWrap = document.querySelector('.bouquet-wrap');
+  if(!bouquetWrap) return;
+
+  const frase = frases[Math.floor(Math.random() * frases.length)];
+  const mensaje = document.createElement('div');
+  mensaje.textContent = frase;
+
+  // estilos
+  mensaje.style.position = 'absolute';
+  mensaje.style.color = '#ffd447';
+  mensaje.style.fontWeight = '700';
+  mensaje.style.fontSize = '16px';
+  mensaje.style.pointerEvents = 'none';
+  mensaje.style.opacity = 1;
+  mensaje.style.zIndex = 9999;
+
+  // posición aleatoria dentro del cuadro
+  const rect = bouquetWrap.getBoundingClientRect();
+  const offsetX = Math.random() * (rect.width - 100); // ancho aproximado del mensaje
+  const offsetY = Math.random() * (rect.height - 30); // altura aproximada del mensaje
+  mensaje.style.left = offsetX + 'px';
+  mensaje.style.top = offsetY + 'px';
+
+  bouquetWrap.appendChild(mensaje);
+
+  // animación: sube y desaparece
+  let pos = 0;
+  const anim = setInterval(() => {
+    pos += 1;
+    mensaje.style.transform = `translateY(-${pos}px)`;
+    mensaje.style.opacity -= 0.02;
+    if(pos > 60){
+      clearInterval(anim);
+      mensaje.remove();
+    }
+  }, 16);
+});
 
     // envelope / carta
     function openEnvelope(){
@@ -448,6 +590,7 @@
     // NUEVO: lluvia de pétalos al abrir la carta
     petalRain(40); // 40 pétalos, puedes ajustar el número
     }
+
     function closeEnvelope(){
       if(!overlay || !envelope) return;
       envelope.classList.remove('open');
